@@ -7,7 +7,7 @@ pkgbase=lib32-mesa
 pkgname=(
   'lib32-vulkan-mesa-layers'
   'lib32-opencl-mesa'
-  'lib32-vulkan-intel'
+#  'lib32-vulkan-intel'
   'lib32-vulkan-radeon'
   'lib32-vulkan-swrast'
   'lib32-vulkan-virtio'
@@ -28,7 +28,7 @@ makedepends=(
   'lib32-libdrm'
   'lib32-libelf'
   'lib32-libglvnd'
-  'lib32-libunwind'
+#  'lib32-libunwind'
   'lib32-libva'
   'lib32-libvdpau'
   'lib32-libx11'
@@ -79,6 +79,8 @@ validpgpkeys=('8703B6700E7EE06D7A39B8D6EDAE37B02CEB490D'  # Emil Velikov <emil.l
               '71C4B75620BC75708B4BDB254C95FAAB3EB073EC'  # Dylan Baker <dylan@pnwbakers.com>
               '57551DE15B968F6341C248F68D8E31AFC32428A6') # Eric Engestrom <eric@engestrom.ch>
 
+options=(!lto) # LTO is bad for mesa, makes random applications crash on my system
+
 prepare() {
   cd mesa-$_mesaver
 
@@ -101,7 +103,7 @@ build() {
     -D b_ndebug=true
     -D dri3=enabled
     -D egl=enabled
-    -D gallium-drivers=r300,r600,radeonsi,nouveau,virgl,svga,swrast,i915,iris,crocus,zink
+    -D gallium-drivers=r300,r600,radeonsi,virgl,svga,swrast,iris,crocus,zink
     -D gallium-extra-hud=true
     -D gallium-nine=true
     -D gallium-omx=disabled
@@ -116,7 +118,7 @@ build() {
     -D glvnd=true
     -D glx=dri
     -D intel-clc=disabled
-    -D libunwind=enabled
+    -D libunwind=disabled
     -D llvm=enabled
     -D lmsensors=enabled
     -D microsoft-clc=disabled
@@ -126,13 +128,19 @@ build() {
     -D shared-glapi=enabled
     -D valgrind=disabled
     -D video-codecs=vc1dec,h264dec,h264enc,h265dec,h265enc
-    -D vulkan-drivers=amd,intel,intel_hasvk,swrast,virtio-experimental
-    -D vulkan-layers=device-select,intel-nullhw,overlay
+    -D vulkan-drivers=amd,swrast,virtio-experimental
+    -D vulkan-layers=device-select,overlay
   )
 
   # Build only minimal debug info to reduce size
-  CFLAGS+=' -g1'
-  CXXFLAGS+=' -g1'
+  #CFLAGS+=' -g1'
+  #CXXFLAGS+=' -g1'
+
+  COMMON_COMPILER_FLAGS="-march=znver4 -O2 -pipe -fno-plt -Wno-ignored-qualifiers -Wno-unused-parameter -Wno-error -fstack-protector-strong"
+  CFLAGS="$COMMON_COMPILER_FLAGS " # -std=c11
+  CXXFLAGS="$COMMON_COMPILER_FLAGS " # -std=c++17
+  LDFLAGS="-Wl,-O2,--sort-common,--as-needed,-z,relro,-z,now"
+
 
   export CC="gcc -m32"
   export CXX="g++ -m32"
@@ -201,24 +209,24 @@ package_lib32-opencl-mesa() {
   install -m644 -Dt "${pkgdir}/usr/share/licenses/${pkgname}" LICENSE
 }
 
-package_lib32-vulkan-intel() {
-  pkgdesc="Intel's Vulkan mesa driver (32-bit)"
-  depends=(
-    'lib32-libdrm'
-    'lib32-libx11'
-    'lib32-libxshmfence'
-    'lib32-systemd'
-    'lib32-wayland'
-    'lib32-zstd'
-  )
-  optdepends=('lib32-vulkan-mesa-layers: additional vulkan layers')
-  provides=('lib32-vulkan-driver')
-
-  _install fakeinstall/usr/share/vulkan/icd.d/intel_*.json
-  _install fakeinstall/$_libdir/libvulkan_intel*.so
-
-  install -m644 -Dt "${pkgdir}/usr/share/licenses/${pkgname}" LICENSE
-}
+#package_lib32-vulkan-intel() {
+#  pkgdesc="Intel's Vulkan mesa driver (32-bit)"
+#  depends=(
+#    'lib32-libdrm'
+#    'lib32-libx11'
+#    'lib32-libxshmfence'
+#    'lib32-systemd'
+#    'lib32-wayland'
+#    'lib32-zstd'
+#  )
+#  optdepends=('lib32-vulkan-mesa-layers: additional vulkan layers')
+#  provides=('lib32-vulkan-driver')
+#
+#  _install fakeinstall/usr/share/vulkan/icd.d/intel_*.json
+#  _install fakeinstall/$_libdir/libvulkan_intel*.so
+#
+#  install -m644 -Dt "${pkgdir}/usr/share/licenses/${pkgname}" LICENSE
+#}
 
 package_lib32-vulkan-radeon() {
   pkgdesc="Radeon's Vulkan mesa driver (32-bit)"
@@ -248,7 +256,7 @@ package_lib32-vulkan-swrast() {
   pkgdesc="Vulkan software rasteriser driver (32-bit)"
   depends=(
     'lib32-libdrm'
-    'lib32-libunwind'
+#    'lib32-libunwind'
     'lib32-libx11'
     'lib32-libxshmfence'
     'lib32-llvm-libs'
@@ -327,7 +335,7 @@ package_lib32-mesa() {
     'lib32-libdrm'
     'lib32-libelf'
     'lib32-libglvnd'
-    'lib32-libunwind'
+#    'lib32-libunwind'
     'lib32-libxdamage'
     'lib32-libxshmfence'
     'lib32-libxxf86vm'
