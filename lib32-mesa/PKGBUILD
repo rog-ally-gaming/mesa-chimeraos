@@ -8,7 +8,6 @@ pkgname=(
   'lib32-vulkan-mesa-layers'
   'lib32-opencl-clover-mesa'
   'lib32-opencl-rusticl-mesa'
-  'lib32-vulkan-intel'
   'lib32-vulkan-radeon'
   'lib32-vulkan-swrast'
   'lib32-vulkan-virtio'
@@ -125,7 +124,7 @@ build() {
     -D b_ndebug=true
     -D dri3=enabled
     -D egl=enabled
-    -D gallium-drivers=r300,r600,radeonsi,nouveau,virgl,svga,swrast,i915,iris,crocus,zink
+    -D gallium-drivers=r300,r600,radeonsi,virgl,svga,swrast,crocus,zink
     -D gallium-extra-hud=true
     -D gallium-nine=true
     -D gallium-omx=disabled
@@ -139,7 +138,7 @@ build() {
     -D gles2=enabled
     -D glvnd=true
     -D glx=dri
-    -D intel-clc=enabled
+    -D intel-clc=disabled
     -D libunwind=disabled
     -D llvm=enabled
     -D lmsensors=enabled
@@ -150,9 +149,15 @@ build() {
     -D shared-glapi=enabled
     -D valgrind=disabled
     -D video-codecs=vc1dec,h264dec,h264enc,h265dec,h265enc
-    -D vulkan-drivers=amd,intel,intel_hasvk,swrast,virtio
-    -D vulkan-layers=device-select,intel-nullhw,overlay
+    -D vulkan-drivers=amd,swrast,virtio
+    -D vulkan-layers=device-select,overlay
+    -D vulkan-beta=true
   )
+
+  COMMON_COMPILER_FLAGS="-march=znver4 -O2 -pipe -fno-plt -Wno-ignored-qualifiers -Wno-unused-parameter -Wno-error -fstack-protector-strong"
+  CFLAGS="$COMMON_COMPILER_FLAGS " # -std=c11
+  CXXFLAGS="$COMMON_COMPILER_FLAGS " # -std=c++17
+  LDFLAGS="-Wl,-O2,--sort-common,--as-needed,-z,relro,-z,now"
 
   export BINDGEN_EXTRA_CLANG_ARGS="-m32"
 
@@ -250,26 +255,6 @@ package_lib32-opencl-rusticl-mesa() {
 
   rm -v fakeinstall/etc/OpenCL/vendors/rusticl.icd
   _install fakeinstall/$_libdir/libRusticlOpenCL*
-
-  install -m644 -Dt "${pkgdir}/usr/share/licenses/${pkgname}" LICENSE
-}
-
-package_lib32-vulkan-intel() {
-  pkgdesc="Intel's Vulkan mesa driver (32-bit)"
-  depends=(
-    'lib32-libdrm'
-    'lib32-libx11'
-    'lib32-libxshmfence'
-    'lib32-systemd'
-    'lib32-wayland'
-    'lib32-xcb-util-keysyms'
-    'lib32-zstd'
-  )
-  optdepends=('lib32-vulkan-mesa-layers: additional vulkan layers')
-  provides=('lib32-vulkan-driver')
-
-  _install fakeinstall/usr/share/vulkan/icd.d/intel_*.json
-  _install fakeinstall/$_libdir/libvulkan_intel*.so
 
   install -m644 -Dt "${pkgdir}/usr/share/licenses/${pkgname}" LICENSE
 }
