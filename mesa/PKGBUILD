@@ -29,7 +29,6 @@ makedepends=(
   'libdrm'
   'libelf'
   'libglvnd'
-  'libunwind'
   'libva'
   'libvdpau'
   'libx11'
@@ -62,9 +61,6 @@ makedepends=(
   'wayland-protocols'
   'xorgproto'
 
-  # valgrind deps
-  'valgrind'
-
   # d3d12 deps
   'directx-headers'
 
@@ -90,6 +86,8 @@ validpgpkeys=('8703B6700E7EE06D7A39B8D6EDAE37B02CEB490D'  # Emil Velikov <emil.l
               'A5CC9FEC93F2F837CB044912336909B6B25FADFA'  # Juan A. Suarez Romero <jasuarez@igalia.com>
               '71C4B75620BC75708B4BDB254C95FAAB3EB073EC'  # Dylan Baker <dylan@pnwbakers.com>
               '57551DE15B968F6341C248F68D8E31AFC32428A6') # Eric Engestrom <eric@engestrom.ch>
+
+options=(!lto) # LTO is bad for mesa, makes random applications crash on my system
 
 prepare() {
   cd mesa-$_mesaver
@@ -125,7 +123,7 @@ build() {
     -D glvnd=true
     -D glx=dri
     -D intel-clc=enabled
-    -D libunwind=enabled
+    -D libunwind=disabled
     -D llvm=enabled
     -D lmsensors=enabled
     -D microsoft-clc=disabled
@@ -133,15 +131,11 @@ build() {
     -D platforms=x11,wayland
     -D rust_std=2021
     -D shared-glapi=enabled
-    -D valgrind=enabled
+    -D valgrind=disabled
     -D video-codecs=vc1dec,h264dec,h264enc,h265dec,h265enc
     -D vulkan-drivers=amd,intel,intel_hasvk,swrast,virtio
     -D vulkan-layers=device-select,intel-nullhw,overlay
   )
-
-  # Build only minimal debug info to reduce size
-  CFLAGS+=' -g1'
-  CXXFLAGS+=' -g1'
 
   arch-meson mesa-$_mesaver build "${meson_options[@]}"
   meson configure build # Print config
@@ -279,7 +273,6 @@ package_vulkan-swrast() {
   pkgdesc="Vulkan software rasteriser driver"
   depends=(
     'libdrm'
-    'libunwind'
     'libx11'
     'libxshmfence'
     'llvm-libs'
@@ -360,7 +353,6 @@ package_mesa() {
     'libdrm'
     'libelf'
     'libglvnd'
-    'libunwind'
     'libxdamage'
     'libxshmfence'
     'libxxf86vm'

@@ -29,7 +29,6 @@ makedepends=(
   'lib32-libdrm'
   'lib32-libelf'
   'lib32-libglvnd'
-  'lib32-libunwind'
   'lib32-libva'
   'lib32-libvdpau'
   'lib32-libx11'
@@ -82,6 +81,8 @@ validpgpkeys=('8703B6700E7EE06D7A39B8D6EDAE37B02CEB490D'  # Emil Velikov <emil.l
               'A5CC9FEC93F2F837CB044912336909B6B25FADFA'  # Juan A. Suarez Romero <jasuarez@igalia.com>
               '71C4B75620BC75708B4BDB254C95FAAB3EB073EC'  # Dylan Baker <dylan@pnwbakers.com>
               '57551DE15B968F6341C248F68D8E31AFC32428A6') # Eric Engestrom <eric@engestrom.ch>
+
+options=(!lto) # LTO is bad for mesa, makes random applications crash on my system
 
 prepare() {
   cat >lib32.txt <<END
@@ -139,7 +140,7 @@ build() {
     -D glvnd=true
     -D glx=dri
     -D intel-clc=enabled
-    -D libunwind=enabled
+    -D libunwind=disabled
     -D llvm=enabled
     -D lmsensors=enabled
     -D microsoft-clc=disabled
@@ -152,10 +153,6 @@ build() {
     -D vulkan-drivers=amd,intel,intel_hasvk,swrast,virtio
     -D vulkan-layers=device-select,intel-nullhw,overlay
   )
-
-  # Build only minimal debug info to reduce size
-  CFLAGS+=' -g1'
-  CXXFLAGS+=' -g1'
 
   export BINDGEN_EXTRA_CLANG_ARGS="-m32"
 
@@ -306,7 +303,6 @@ package_lib32-vulkan-swrast() {
   pkgdesc="Vulkan software rasteriser driver (32-bit)"
   depends=(
     'lib32-libdrm'
-    'lib32-libunwind'
     'lib32-libx11'
     'lib32-libxshmfence'
     'lib32-llvm-libs'
@@ -387,7 +383,6 @@ package_lib32-mesa() {
     'lib32-libdrm'
     'lib32-libelf'
     'lib32-libglvnd'
-    'lib32-libunwind'
     'lib32-libxdamage'
     'lib32-libxshmfence'
     'lib32-libxxf86vm'
