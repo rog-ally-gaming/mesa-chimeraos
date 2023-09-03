@@ -67,7 +67,7 @@ makedepends=(
   'git'
 )
 source=(
-  'mesa::git+https://gitlab.freedesktop.org/mesa/mesa.git#branch=23.2'
+  'mesa::git+https://gitlab.freedesktop.org/Venemo/mesa.git#branch=radv_gfx11_attr_ring_bug'
   LICENSE
   #0001-gamescope-limiter.patch
 )
