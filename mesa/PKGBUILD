@@ -62,6 +62,7 @@ makedepends=(
   'libomxil-bellagio'
 
   'git'
+  'lld'
 )
 source=(
   'mesa::git+https://gitlab.freedesktop.org/mesa/mesa.git#branch=main'
