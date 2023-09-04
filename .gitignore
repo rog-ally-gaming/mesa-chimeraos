@@ -7,3 +7,5 @@
 /lib32-mesa/pkg/**
 /lib32-mesa/*.tar.*
 /lib32-mesa/mesa/**
+
+*.log

@@ -138,6 +138,7 @@ build() {
     -D vulkan-beta=true
   )
 
+  export LD="lld"
   export CC="clang"
   export CXX="clang++"
   export COMMON_COMPILER_FLAGS="-march=znver4 -O2 -pipe -fno-plt -Wno-ignored-qualifiers -Wno-unused-parameter -Wno-error -fstack-protector-strong"
