@@ -137,6 +137,7 @@ build() {
     -D vulkan-beta=true
   )
 
+  export RUSTFLAGS="-C opt-level=3 -C target-cpu=znver4"
   export LD="lld"
   export CC="clang"
   export CXX="clang++"
