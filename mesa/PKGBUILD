@@ -58,16 +58,13 @@ makedepends=(
   'wayland-protocols'
   'xorgproto'
 
-  # d3d12 deps
-  'directx-headers'
-
   # gallium-omx deps
   'libomxil-bellagio'
 
   'git'
 )
 source=(
-  'mesa::git+https://gitlab.freedesktop.org/Venemo/mesa.git#branch=radv_gfx11_attr_ring_bug'
+  'mesa::git+https://gitlab.freedesktop.org/mesa/mesa.git#branch=main'
   LICENSE
   0001-gamescope-limiter.patch
 )
@@ -105,11 +102,13 @@ prepare() {
 
 build() {
   local meson_options=(
+    -D sysconfdir=/etc
     -D android-libbacktrace=disabled
     -D b_ndebug=true
     -D dri3=enabled
     -D egl=enabled
-    -D gallium-drivers=r300,r600,radeonsi,virgl,svga,swrast,i915,iris,crocus,zink,d3d12
+    -D gallium-d3d12-video=disabled
+    -D gallium-drivers=radeonsi,virgl,svga,swrast,zink
     -D gallium-extra-hud=true
     -D gallium-nine=true
     -D gallium-omx=bellagio
@@ -139,13 +138,15 @@ build() {
     -D vulkan-beta=true
   )
 
-  COMMON_COMPILER_FLAGS="-march=znver4 -O2 -pipe -fno-plt -Wno-ignored-qualifiers -Wno-unused-parameter -Wno-error -fstack-protector-strong"
-  CFLAGS="$COMMON_COMPILER_FLAGS " # -std=c11
-  CXXFLAGS="$COMMON_COMPILER_FLAGS " # -std=c++17
-  LDFLAGS="-Wl,-O2,--sort-common,--as-needed,-z,relro,-z,now"
+  export CC="clang"
+  export CXX="clang++"
+  export COMMON_COMPILER_FLAGS="-march=znver4 -O2 -pipe -fno-plt -Wno-ignored-qualifiers -Wno-unused-parameter -Wno-error -fstack-protector-strong"
+  export CFLAGS="$COMMON_COMPILER_FLAGS " # -std=c11
+  export CXXFLAGS="$COMMON_COMPILER_FLAGS " # -std=c++17
+  export LDFLAGS="-Wl,-O2,--sort-common,--as-needed,-z,relro,-z,now"
 
   arch-meson mesa build "${meson_options[@]}"
-  meson configure build # Print config
+  meson configure --no-pager build # Print config
   meson compile -C build
 
   # fake installation to be seperated into packages
