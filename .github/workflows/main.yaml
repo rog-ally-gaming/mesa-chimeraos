@@ -38,6 +38,10 @@ jobs:
         run: |
           su build bash -c "cd /home/build/mesa && makepkg --printsrcinfo > /home/build/mesa/.SRCINFO"
           su build bash -c "cd /home/build/lib32-mesa && makepkg --printsrcinfo > /home/build/lib32-mesa/.SRCINFO"
+      - name: Customize makepkg.conf
+        run: |
+          sed -i -e 's/BUILDENV=(!distcc color !ccache check !sign)/BUILDENV=(!distcc color !ccache !check !sign)/g' /etc/makepkg.conf
+          sed -i -e 's/-march=x86-64 -mtune=generic/-march=znver4/g' /etc/makepkg.conf
       - name: Install dependencies (mesa)
         run: |
           pacman -Syu --noconfirm $(sed -n -e 's/^[[:space:]]*\(make\)\?depends\(_x86_64\)\? = \([[:alnum:][:punct:]]*\)[[:space:]]*$/\3/p' /home/build/mesa/.SRCINFO)
