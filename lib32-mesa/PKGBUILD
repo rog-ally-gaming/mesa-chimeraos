@@ -15,7 +15,7 @@ pkgname=(
   'lib32-mesa-vdpau'
   'lib32-mesa'
 )
-pkgver=24.0.0_devel.181988.9ca9b674462.d954e6c2b60b8d8c955b77483af4bdfb_1.181988.9ca9b674462.d954e6c2b60b8d8c955b77483af4bdfb_1.181988.9ca9b674462.d954e6c2b60b8d8c955b77483af4bdfb_1.181988.9ca9b674462.d954e6c2b60b8d8c955b77483af4bdfb
+pkgver=24.0.0_devel_1.181988.9ca9b674462.d954e6c2b60b8d8c955b77483af4bdfb
 pkgrel=1
 pkgdesc="An open-source implementation of the OpenGL specification (32-bit)"
 url="https://www.mesa3d.org/"
@@ -46,6 +46,7 @@ makedepends=(
   'lib32-zstd'
 
   # shared between mesa and lib32-mesa
+  'git'
   'clang'
   'cmake'
   'elfutils'
