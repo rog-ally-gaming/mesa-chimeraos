@@ -15,7 +15,7 @@ pkgname=(
   'lib32-mesa-vdpau'
   'lib32-mesa'
 )
-pkgver=24.0.0_devel_1.181988.9ca9b674462.d954e6c2b60b8d8c955b77483af4bdfb
+pkgver=24.0.0_devel
 pkgrel=1
 pkgdesc="An open-source implementation of the OpenGL specification (32-bit)"
 url="https://www.mesa3d.org/"
@@ -61,13 +61,11 @@ makedepends=(
 
 )
 source=(
-  'mesa::git+https://gitlab.freedesktop.org/mesa/mesa.git#branch=main'
+  'mesa::git+https://github.com/NeroReflex/mesa.git#branch=gamescope'
   LICENSE
-  gamescope.patch
 )
 b2sums=('SKIP'
         '1ecf007b82260710a7bf5048f47dd5d600c168824c02c595af654632326536a6527fbe0738670ee7b921dd85a70425108e0f471ba85a8e1ca47d294ad74b4adb' # LICENSE
-        '6219a0797724ab17b36f85a134349ffa52f3fce74490834c5f86b474ba893cbb34ebef604cd72c851436296add906dbdb8fca9eb50d1e5f74c7caa8e2963bdcc' # gamescope.patch
 )
 
 validpgpkeys=('8703B6700E7EE06D7A39B8D6EDAE37B02CEB490D'  # Emil Velikov <emil.l.velikov@gmail.com>
@@ -103,20 +101,19 @@ prepare() {
   # https://bugs.launchpad.net/ubuntu/+source/chromium-browser/+bug/2020604
   echo "$pkgver-$pkgrel" >VERSION
 
-  local _ver
-  read -r _ver <VERSION
-
-  local _patchver
-  local _patchfile
-  for _patchfile in "${source[@]}"; do
-      _patchfile="${_patchfile%%::*}"
-      _patchfile="${_patchfile##*/}"
-      [[ $_patchfile = *.patch ]] || continue
-      _patchver="${_patchver}$(md5sum ${srcdir}/${_patchfile} | cut -c1-32)"
+  local src
+  for src in "${source[@]}"; do
+    src="${src%%::*}"
+    src="${src##*/}"
+    [[ $src = *.patch ]] || continue
+    echo "Applying patch $src..."
+    patch -Np1 < "../$src"
   done
-  _patchver="$(echo -n $_patchver | md5sum | cut -c1-32)"
 
-  echo ${_ver/-/_}.$(git rev-list --count HEAD).$(git rev-parse --short HEAD).${_patchver}
+  # Include package release in version string so Chromium invalidates
+  # its GPU cache; otherwise it can cause pages to render incorrectly.
+  # https://bugs.launchpad.net/ubuntu/+source/chromium-browser/+bug/2020604
+  echo "$pkgver-$epoch.$pkgrel" >VERSION
 }
 
 build() {
