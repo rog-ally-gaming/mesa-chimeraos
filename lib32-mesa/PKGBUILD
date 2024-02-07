@@ -420,3 +420,4 @@ package_lib32-mesa() {
 
   install -m644 -Dt "${pkgdir}/usr/share/licenses/${pkgname}" LICENSE
 }
+
