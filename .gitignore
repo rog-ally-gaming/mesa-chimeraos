@@ -4,4 +4,4 @@
 /lib32-mesa/mesa/**
 /lib32-mesa/src/**
 /lib32-mesa/pkg/**
-*.tar.zst
+*.tar.*

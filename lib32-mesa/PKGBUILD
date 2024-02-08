@@ -61,7 +61,7 @@ makedepends=(
 
 )
 source=(
-  'mesa::git+https://github.com/NeroReflex/mesa.git#branch=gamescope-24.0.0-rc2'
+  'https://github.com/NeroReflex/mesa/archive/refs/tags/v24.0.0-rc3-enhanced-with-24.1-features-fix.tar.gz'
   LICENSE
 )
 b2sums=('SKIP'
@@ -75,26 +75,11 @@ validpgpkeys=('8703B6700E7EE06D7A39B8D6EDAE37B02CEB490D'  # Emil Velikov <emil.l
               '71C4B75620BC75708B4BDB254C95FAAB3EB073EC'  # Dylan Baker <dylan@pnwbakers.com>
               '57551DE15B968F6341C248F68D8E31AFC32428A6') # Eric Engestrom <eric@engestrom.ch>
 
-pkgver() {
-    cd mesa
-    local _ver
-    read -r _ver <VERSION
-
-    local _patchver
-    local _patchfile
-    for _patchfile in "${source[@]}"; do
-        _patchfile="${_patchfile%%::*}"
-        _patchfile="${_patchfile##*/}"
-        [[ $_patchfile = *.patch ]] || continue
-        _patchver="${_patchver}$(md5sum ${srcdir}/${_patchfile} | cut -c1-32)"
-    done
-    _patchver="$(echo -n $_patchver | md5sum | cut -c1-32)"
-
-    echo ${_ver/-/_}.$(git rev-list --count HEAD).$(git rev-parse --short HEAD).${_patchver}
-}
-
 prepare() {
+  dirname=$(find -maxdepth 1 -type d | grep "mesa")
+  cp -r $dirname mesa
   cd mesa
+  rm -rf "$dirname"
 
   # Include package release in version string so Chromium invalidates
   # its GPU cache; otherwise it can cause pages to render incorrectly.
