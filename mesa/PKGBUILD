@@ -72,7 +72,7 @@ makedepends=(
   'libomxil-bellagio'
 )
 source=(
-  'https://github.com/NeroReflex/mesa/archive/refs/tags/v24.0.0-rc2.tar.gz'
+  'https://github.com/NeroReflex/mesa/archive/refs/tags/v23.3.3.tar.gz'
   LICENSE
 )
 b2sums=('SKIP'
