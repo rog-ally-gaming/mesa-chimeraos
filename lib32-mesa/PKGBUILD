@@ -61,7 +61,7 @@ makedepends=(
 
 )
 source=(
-  'mesa::git+https://github.com/NeroReflex/mesa.git#branch=gamescope'
+  'mesa::git+https://github.com/NeroReflex/mesa.git#branch=gamescope-24.0.0-rc2'
   LICENSE
 )
 b2sums=('SKIP'
@@ -147,7 +147,7 @@ build() {
     -D rust_std=2021
     -D shared-glapi=enabled
     -D valgrind=disabled
-    -D video-codecs=vc1dec,h264dec,h264enc,h265dec,h265enc
+    -D video-codecs=vc1dec,h264dec,h264enc,h265dec,h265enc,av1dec,av1enc,vp9dec
     -D vulkan-drivers=amd,swrast,virtio
     -D vulkan-layers=device-select,overlay
     -D vulkan-beta=true

@@ -70,7 +70,7 @@ makedepends=(
   'libomxil-bellagio'
 )
 source=(
-  'mesa::git+https://github.com/NeroReflex/mesa.git#branch=gamescope'
+  'mesa::git+https://github.com/NeroReflex/mesa.git#branch=gamescope-24.0.0-rc2'
   LICENSE
 )
 b2sums=('SKIP'
