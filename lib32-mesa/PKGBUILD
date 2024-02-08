@@ -15,7 +15,7 @@ pkgname=(
   'lib32-mesa-vdpau'
   'lib32-mesa'
 )
-pkgver=24.0.0_devel
+pkgver=23.3.3
 pkgrel=1
 pkgdesc="An open-source implementation of the OpenGL specification (32-bit)"
 url="https://www.mesa3d.org/"
