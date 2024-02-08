@@ -62,9 +62,6 @@ makedepends=(
   'wayland-protocols'
   'xorgproto'
 
-  # valgrind deps
-  'valgrind'
-
   # d3d12 deps
   'directx-headers'
 
@@ -137,7 +134,7 @@ build() {
     -D platforms=x11,wayland
     -D rust_std=2021
     -D shared-glapi=enabled
-    -D valgrind=enabled
+    -D valgrind=disabled
     -D video-codecs=vc1dec,h264dec,h264enc,h265dec,h265enc,av1enc,av1dec,vp9dec
     -D vulkan-drivers=amd,swrast,virtio
     -D vulkan-layers=device-select,overlay
