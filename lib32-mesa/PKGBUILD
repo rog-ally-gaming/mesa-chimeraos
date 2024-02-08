@@ -64,7 +64,7 @@ makedepends=(
 
 )
 source=(
-  'https://github.com/NeroReflex/mesa/archive/refs/tags/v23.3.3-av1.tar.gz'
+  'https://github.com/NeroReflex/mesa/archive/refs/tags/v23.3.3-av1-vulkan1.3.277.tar.gz'
   LICENSE
 )
 b2sums=('SKIP'
@@ -130,11 +130,12 @@ build() {
     -D rust_std=2021
     -D shared-glapi=enabled
     -D valgrind=disabled
-    -D video-codecs=vc1dec,h264dec,h264enc,h265dec,h265enc
+    -D video-codecs=vc1dec,h264dec,h264enc,h265dec,h265enc,av1enc,av1dec,vp9dec
     -D vulkan-drivers=amd,swrast,virtio
     -D vulkan-layers=device-select,overlay
     -D vulkan-beta=true
     -D opencl-spirv=true
+    -D buildtype=release
   )
 
   # Build only minimal debug info to reduce size
