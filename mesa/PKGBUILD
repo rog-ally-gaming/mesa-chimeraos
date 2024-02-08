@@ -140,7 +140,6 @@ build() {
     -D vulkan-layers=device-select,overlay
     -D vulkan-beta=true
     -D opencl-spirv=true
-    -D buildtype=release
   )
 
   # Build only minimal debug info to reduce size
