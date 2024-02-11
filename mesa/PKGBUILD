@@ -10,12 +10,11 @@ pkgname=(
   'opencl-rusticl-mesa'
   'vulkan-radeon'
   'vulkan-swrast'
-  'vulkan-virtio'
   'libva-mesa-driver'
   'mesa-vdpau'
   'mesa'
 )
-pkgver=23.3.3
+pkgver=24.0.0
 pkgrel=1
 pkgdesc="An open-source implementation of the OpenGL specification"
 url="https://www.mesa3d.org/"
@@ -70,7 +69,7 @@ makedepends=(
   'libomxil-bellagio'
 )
 source=(
-  'https://github.com/NeroReflex/mesa/archive/refs/tags/v23.3.3-av1-vulkan1.3.277.tar.gz'
+  'https://github.com/NeroReflex/mesa/archive/refs/tags/v24.0.0.tar.gz'
   LICENSE
 )
 b2sums=('SKIP'
@@ -137,7 +136,7 @@ build() {
     -D shared-glapi=enabled
     -D valgrind=disabled
     -D video-codecs=vc1dec,h264dec,h264enc,h265dec,h265enc,av1enc,av1dec,vp9dec
-    -D vulkan-drivers=amd,swrast,virtio
+    -D vulkan-drivers=amd,swrast
     -D vulkan-layers=device-select,overlay
     -D vulkan-beta=true
     -D opencl-spirv=true
@@ -145,10 +144,10 @@ build() {
   )
 
   # Build with no debug info to reduce size
-  CFLAGS+=' -g0'
-  CXXFLAGS+=' -g0'
+  CFLAGS+=' -g0 -O2 '
+  CXXFLAGS+=' -g0 -O2 '
 
-  meson setup --prefix /usr --libexecdir lib --sbindir bin --auto-features enabled --wrap-mode nodownload -D b_lto=false -D b_pie=true -D python.bytecompile=1 mesa build "${meson_options[@]}"
+  meson setup --prefix /usr --libexecdir lib --sbindir bin --auto-features enabled --wrap-mode nodownload -D b_lto=true -D b_pie=true -D python.bytecompile=1 mesa build "${meson_options[@]}"
   meson configure build --no-pager # Print config
   $NINJAFLAGS meson compile -C build
 
@@ -280,26 +279,6 @@ package_vulkan-swrast() {
 
   _install fakeinstall/usr/share/vulkan/icd.d/lvp_icd*.json
   _install fakeinstall/$_libdir/libvulkan_lvp.so
-
-  install -m644 -Dt "${pkgdir}/usr/share/licenses/${pkgname}" LICENSE
-}
-
-package_vulkan-virtio() {
-  pkgdesc="Venus Vulkan mesa driver for Virtual Machines"
-  depends=(
-    'libdrm'
-    'libx11'
-    'libxshmfence'
-    'systemd'
-    'wayland'
-    'xcb-util-keysyms'
-    'zstd'
-  )
-  optdepends=('vulkan-mesa-layers: additional vulkan layers')
-  provides=('vulkan-driver')
-
-  _install fakeinstall/usr/share/vulkan/icd.d/virtio_icd*.json
-  _install fakeinstall/$_libdir/libvulkan_virtio.so
 
   install -m644 -Dt "${pkgdir}/usr/share/licenses/${pkgname}" LICENSE
 }
