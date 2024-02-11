@@ -63,7 +63,7 @@ makedepends=(
 
 )
 source=(
-  'https://github.com/NeroReflex/mesa/archive/refs/tags/v24.0.0.tar.gz'
+  'https://github.com/NeroReflex/mesa/archive/refs/tags/v24.0.0-vgpr-usage.tar.gz'
   LICENSE
 )
 b2sums=('SKIP'
