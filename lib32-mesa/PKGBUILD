@@ -138,9 +138,9 @@ build() {
     -D buildtype=release
   )
 
-  # Build only minimal debug info to reduce size
-  #CFLAGS+=' -g1'
-  #CXXFLAGS+=' -g1'
+  # Build with no debug info to reduce size
+  CFLAGS+=' -g0'
+  CXXFLAGS+=' -g0'
 
   export BINDGEN_EXTRA_CLANG_ARGS="-m32"
 
