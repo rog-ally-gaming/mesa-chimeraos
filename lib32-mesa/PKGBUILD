@@ -103,9 +103,10 @@ build() {
     --cross-file lib32
     -D android-libbacktrace=disabled
     -D b_ndebug=true
+    -D b_lto=false
     -D dri3=enabled
     -D egl=enabled
-    -D gallium-drivers=radeonsi,virgl,svga,swrast,crocus,zink
+    -D gallium-drivers=radeonsi,swrast,zink
     -D gallium-extra-hud=true
     -D gallium-nine=true
     -D gallium-omx=disabled
@@ -113,13 +114,12 @@ build() {
     -D gallium-rusticl=true
     -D gallium-va=enabled
     -D gallium-vdpau=enabled
-    -D gallium-xa=enabled
+    -D gallium-xa=disabled
     -D gbm=enabled
     -D gles1=disabled
     -D gles2=enabled
     -D glvnd=true
     -D glx=dri
-    -D intel-clc=enabled
     -D libunwind=disabled
     -D llvm=enabled
     -D lmsensors=enabled
@@ -129,12 +129,13 @@ build() {
     -D rust_std=2021
     -D shared-glapi=enabled
     -D valgrind=disabled
-    -D video-codecs=vc1dec,h264dec,h264enc,h265dec,h265enc,av1enc,av1dec,vp9dec
+    -D video-codecs=all
     -D vulkan-drivers=amd,swrast
     -D vulkan-layers=device-select,overlay
     -D vulkan-beta=true
     -D opencl-spirv=true
     -D buildtype=release
+    --wrap-mode=nofallback
   )
 
   # Build with no debug info to reduce size
@@ -366,7 +367,9 @@ package_lib32-mesa() {
   _install fakeinstall/$_libdir/d3d
   _install fakeinstall/$_libdir/lib{gbm,glapi}.so*
   _install fakeinstall/$_libdir/libOSMesa.so*
-  _install fakeinstall/$_libdir/libxatracker.so*
+
+  # only needed when gallium-xa is enabled
+  #_install fakeinstall/$_libdir/libxatracker.so*
 
   rm -rv fakeinstall/usr/include
   _install fakeinstall/$_libdir/pkgconfig
