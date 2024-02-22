@@ -352,7 +352,9 @@ package_mesa() {
   # ati-dri, nouveau-dri, intel-dri, svga-dri, swrast, swr
   _install fakeinstall/$_libdir/dri/*_dri.so
 
-  _install fakeinstall/$_libdir/bellagio
+  # only needed when bellagio is enabled
+  # _install fakeinstall/$_libdir/bellagio
+
   _install fakeinstall/$_libdir/d3d
   _install fakeinstall/$_libdir/lib{gbm,glapi}.so*
   _install fakeinstall/$_libdir/libOSMesa.so*
