@@ -44,7 +44,7 @@ jobs:
       - name: Customize makepkg.conf
         run: |
           sed -i -e 's/BUILDENV=(!distcc color !ccache check !sign)/BUILDENV=(!distcc color !ccache !check !sign)/g' /etc/makepkg.conf
-          sed -i -e 's/-march=x86-64/-march=x86-64-v2/g' /etc/makepkg.conf
+          sed -i -e 's/-march=x86-64/-march=x86-64-v3/g' /etc/makepkg.conf
           sed -i -e 's/-mtune=generic/-mtune=znver4/g' /etc/makepkg.conf
       - name: Install dependencies (mesa)
         run: |
